@@ -1,8 +1,10 @@
-import { baseProcedure, createTRPCRouter } from "../init";
+import { createTRPCRouter, protectedProcedure } from "../init";
 import prisma from "@/lib/db";
+import { inngest } from "@/inngest/client";
 export const appRouter = createTRPCRouter({
-  getUsers: baseProcedure.query(() => {
-    return prisma.user.findMany();
+  testAI: protectedProcedure.mutation(async () => {
+    const result = await inngest.send({ name: "execute/ai" });
+    return { success: true, message: "Job queued", data: result };
   }),
 });
 // export type definition of API
