@@ -4,7 +4,7 @@ import { inngest } from "@/inngest/client";
 export const appRouter = createTRPCRouter({
   testAI: protectedProcedure.mutation(async () => {
     const result = await inngest.send({ name: "execute/ai" });
-    return { success: true, message: "Job queded", data: result };
+    return { success: true, message: "Job queued", data: result };
   }),
 });
 // export type definition of API

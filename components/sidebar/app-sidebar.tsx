@@ -1,20 +1,7 @@
 "use client";
 
 import * as React from "react";
-import {
-  AudioWaveform,
-  BookOpen,
-  Bot,
-  Command,
-  FolderOpen,
-  Frame,
-  GalleryVerticalEnd,
-  KeyIcon,
-  Map,
-  PieChart,
-  Settings2,
-  SquareTerminal,
-} from "lucide-react";
+import { FolderOpen, KeyIcon, SquareTerminal } from "lucide-react";
 
 import { NavMain } from "@/components/sidebar/nav-main";
 import { NavUser } from "@/components/sidebar/nav-user";
@@ -49,16 +36,12 @@ const data = {
   ],
 };
 
-function SidebarContent_({ 
-  items,
-}: {
-  items: typeof data.navMain;
-}) {
+function SidebarContent_({ items }: { items: typeof data.navMain }) {
   const { data: session } = useSession();
-  
+
   const userData = {
     name: session?.user?.name || "User",
-    email: session?.user?.email || "user@example.com", 
+    email: session?.user?.email || "user@example.com",
     avatar: session?.user?.image || "/avatars/shadcn.jpg",
   };
 
@@ -78,9 +61,7 @@ function SidebarContent_({
   );
 }
 
-export function AppSidebar({
-  ...props
-}: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarContent_ items={data.navMain} />

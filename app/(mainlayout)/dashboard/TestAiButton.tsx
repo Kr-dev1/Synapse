@@ -22,8 +22,6 @@ export default function TestAiButton() {
     })
   );
 
-  console.log(result);
-
   return (
     <div className="space-y-3">
       <div>{JSON.stringify(result)}</div>
