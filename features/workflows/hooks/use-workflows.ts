@@ -59,14 +59,14 @@ export const useUpdateWorkflowName = () => {
   return useMutation(
     trpc.workflows.updateName.mutationOptions({
       onSuccess: (data) => {
-        toast.success(`Workflow ${data.name} updated`);
+        toast.success(`Workflow "${data.name}" updated`);
         queryClient.invalidateQueries(trpc.workflows.getMany.queryOptions({}));
         queryClient.invalidateQueries(
           trpc.workflows.getOne.queryOptions({ id: data.id })
         );
       },
       onError: (error) => {
-        toast.error(`Failed to update workflow ${error.message}`);
+        toast.error(`Failed to update workflow: ${error.message}`);
       },
     })
   );

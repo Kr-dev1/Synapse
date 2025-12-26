@@ -26,7 +26,7 @@ export const EditorSaveButton = ({ workflowId }: { workflowId: string }) => {
   );
 };
 
-export const EditorNameinput = ({ workflowId }: { workflowId: string }) => {
+export const EditorNameInput = ({ workflowId }: { workflowId: string }) => {
   const { data: workflow } = useSuspenseWorkflow(workflowId);
   const updateWorkflowName = useUpdateWorkflowName();
   const [isEditing, setIsEditing] = useState(false);
@@ -38,7 +38,7 @@ export const EditorNameinput = ({ workflowId }: { workflowId: string }) => {
     if (workflow.name) {
       setName(workflow.name);
     }
-  }, []);
+  }, [workflow.name]);
 
   useEffect(() => {
     if (isEditing && inputRef.current) {
@@ -109,7 +109,7 @@ export const EditorBreadCrumbs = ({ workflowId }: { workflowId: string }) => {
           </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
-        <EditorNameinput workflowId={workflowId} />
+        <EditorNameInput workflowId={workflowId} />
       </BreadcrumbList>
     </Breadcrumb>
   );

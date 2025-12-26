@@ -14,7 +14,6 @@ export const EditorError = () => {
 
 export const Editor = ({ workflowId }: { workflowId: string }) => {
   const { data: workflow } = useSuspenseWorkflow(workflowId);
-  console.log(workflow);
 
   return (
     <div className="flex flex-col h-full w-full">

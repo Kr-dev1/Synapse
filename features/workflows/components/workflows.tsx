@@ -30,7 +30,7 @@ export const WorkflowsList = () => {
     <EntityList
       items={workflows.data.items}
       getKey={(workflow) => workflow.id}
-      renderItem={(worflow) => <WorkflowItem data={worflow} />}
+      renderItem={(workflow) => <WorkflowItem data={workflow} />}
       emptyView={<WorkflowsEmpty />}
     />
   );
@@ -119,7 +119,7 @@ export const WorkflowsError = () => {
 
 export const WorkflowsEmpty = () => {
   const createWorkflow = useCreateWorkflow();
-  const { handleError, modal } = useUpgradeModel();
+  const { handleError } = useUpgradeModel();
   const router = useRouter();
   const handleCreate = () => {
     createWorkflow.mutate(undefined, {

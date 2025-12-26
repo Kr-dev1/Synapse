@@ -216,13 +216,13 @@ interface EntityListProps<T> {
   renderItem: (item: T, index: number) => React.ReactNode;
   getKey?: (item: T, index: number) => string | number;
   emptyView?: React.ReactNode;
-  clasName?: string;
+  className?: string;
 }
 
 export const EntityList = <T,>({
   items,
   renderItem,
-  clasName,
+  className,
   emptyView,
   getKey,
 }: EntityListProps<T>) => {
@@ -235,7 +235,7 @@ export const EntityList = <T,>({
   }
 
   return (
-    <div className={cn("flex flex-col gap-y-4", clasName)}>
+    <div className={cn("flex flex-col gap-y-4", className)}>
       {items.map((item, index) => (
         <div key={getKey ? getKey(item, index) : index}>
           {renderItem(item, index)}
