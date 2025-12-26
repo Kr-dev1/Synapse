@@ -1,8 +1,7 @@
-import { PlusIcon, Search, SearchIcon } from "lucide-react";
+import { PlusIcon, SearchIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
-import { InputGroup, InputGroupAddon, InputGroupInput } from "./ui/input-group";
 
 type EntityHeaderProps = {
   title: string;
@@ -128,10 +127,13 @@ export const EntityPagination = ({
           Previous
         </Button>
         <Button
-          disabled={page === totalPages || disabled}
+          disabled={totalPages === 0 || page === totalPages || disabled}
           variant="outline"
           size="sm"
-          onClick={() => onPageChange(Math.min(totalPages, page + 1))}
+          onClick={() => {
+            if (totalPages === 0 || page >= totalPages || disabled) return;
+            onPageChange(page + 1);
+          }}
         >
           Next
         </Button>

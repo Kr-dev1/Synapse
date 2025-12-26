@@ -34,8 +34,7 @@ export const WorkflowsSearch = () => {
     <EntitySearch
       value={searchValue}
       onChange={onSearchChange}
-      placeholder="Search workflows
-  "
+      placeholder="Search workflows"
     />
   );
 };
