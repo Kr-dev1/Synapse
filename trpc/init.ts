@@ -43,19 +43,29 @@ export const protectedProcedure = baseProcedure.use(async ({ ctx, next }) => {
 
 export const premiumProcedure = protectedProcedure.use(
   async ({ ctx, next }) => {
-    const customer = await polarClient.customers.getStateExternal({
-      externalId: ctx.session.user.id,
-    });
+    try {
+      const customer = await polarClient.customers.getStateExternal({
+        externalId: ctx.session.user.id,
+      });
 
-    if (
-      !customer.activeSubscriptions ||
-      customer.activeSubscriptions.length === 0
-    ) {
+      if (
+        !customer.activeSubscriptions ||
+        customer.activeSubscriptions.length === 0
+      ) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Active subscription not found",
+        });
+      }
+      return next({ ctx: { ...ctx, customer } });
+    } catch (error) {
+      if (error instanceof TRPCError) {
+        throw error;
+      }
       throw new TRPCError({
         code: "FORBIDDEN",
         message: "Active subscription not found",
       });
     }
-    return next({ ctx: { ...ctx, customer } });
   }
 );
