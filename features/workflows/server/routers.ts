@@ -98,12 +98,12 @@ export const workflowsRouter = createTRPCRouter({
           })),
         });
 
-        const updateWorkflows = await tx.workFlow.update({
+        const updateWorkflow = await tx.workFlow.update({
           where: { id },
           data: { updatedAt: new Date() },
         });
 
-        return updateWorkflows;
+        return updateWorkflow;
       });
     }),
 

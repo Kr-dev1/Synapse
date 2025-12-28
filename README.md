@@ -1,36 +1,168 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Synapse
+
+A visual workflow automation platform built with Next.js. Create, manage, and execute automated workflows through an intuitive drag-and-drop interface.
+
+## Architecture
+
+```mermaid
+graph TB
+    subgraph Client["Frontend (React)"]
+        UI["UI Components<br/>(Radix UI + Tailwind)"]
+        Editor["Workflow Editor<br/>(@xyflow/react)"]
+        State["State Management<br/>(TanStack Query + Jotai)"]
+        tRPCClient["tRPC Client"]
+    end
+
+    subgraph Server["Backend (Next.js App Router)"]
+        API["API Routes"]
+        tRPCServer["tRPC Server"]
+        Auth["Authentication<br/>(better-auth)"]
+        Inngest["Background Jobs<br/>(Inngest)"]
+    end
+
+    subgraph Data["Data Layer"]
+        Prisma["Prisma ORM"]
+        DB[(PostgreSQL)]
+    end
+
+    subgraph External["External Services"]
+        AI["AI Providers<br/>(OpenAI, Anthropic, Google, Groq)"]
+        Polar["Payments<br/>(Polar.sh)"]
+    end
+
+    UI --> State
+    Editor --> State
+    State --> tRPCClient
+    tRPCClient --> tRPCServer
+    tRPCServer --> Auth
+    tRPCServer --> Prisma
+    API --> Inngest
+    Prisma --> DB
+    Inngest --> AI
+    Auth --> Polar
+```
+
+## Project Structure
+
+```
+synapse/
+├── app/                    # Next.js App Router
+│   ├── (auth)/             # Authentication pages
+│   ├── (mainlayout)/       # Main application pages
+│   ├── api/                # API routes (tRPC, auth, inngest)
+│   └── generated/          # Prisma generated client
+├── features/               # Feature modules
+│   ├── auth/               # Authentication logic
+│   ├── editor/             # Workflow canvas editor
+│   ├── executions/         # Execution nodes (HTTP Request, etc.)
+│   ├── triggers/           # Trigger nodes (Manual, etc.)
+│   ├── workflows/          # Workflow CRUD operations
+│   └── subscriptions/      # Premium features
+├── components/             # Shared UI components
+├── trpc/                   # tRPC configuration
+├── prisma/                 # Database schema & migrations
+├── inngest/                # Background job definitions
+└── lib/                    # Utilities and configurations
+```
+
+## Data Model
+
+```mermaid
+erDiagram
+    User ||--o{ WorkFlow : owns
+    User ||--o{ Account : has
+    User ||--o{ Session : has
+    WorkFlow ||--o{ Node : contains
+    WorkFlow ||--o{ Connection : contains
+    Node ||--o{ Connection : "connects from"
+    Node ||--o{ Connection : "connects to"
+
+    User {
+        string id PK
+        string name
+        string email UK
+        boolean emailVerified
+        string image
+    }
+
+    WorkFlow {
+        string id PK
+        string name
+        string userId FK
+        datetime createdAt
+        datetime updatedAt
+    }
+
+    Node {
+        string id PK
+        string workflowId FK
+        string name
+        NodeType type
+        json position
+        json data
+    }
+
+    Connection {
+        string id PK
+        string workflowId FK
+        string fromNodeId FK
+        string toNodeId FK
+        string fromOutput
+        string toInput
+    }
+```
+
+## Tech Stack
+
+| Layer     | Technology              |
+| --------- | ----------------------- |
+| Framework | Next.js 16 (App Router) |
+| Language  | TypeScript              |
+| Database  | PostgreSQL + Prisma     |
+| API       | tRPC                    |
+| State     | TanStack Query + Jotai  |
+| Auth      | better-auth             |
+| UI        | Radix UI + Tailwind CSS |
+| Editor    | @xyflow/react           |
+| AI        | Vercel AI SDK           |
+| Jobs      | Inngest                 |
+| Payments  | Polar.sh                |
 
 ## Getting Started
 
-First, run the development server:
+1. **Install dependencies**
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+   ```bash
+   bun install
+   ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. **Set up environment variables**
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+   ```bash
+   cp .env.example .env.local
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3. **Set up the database**
 
-## Learn More
+   ```bash
+   bunx prisma migrate dev
+   bunx prisma generate
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+4. **Run the development server**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   ```bash
+   bun dev
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+5. Open [http://localhost:3000](http://localhost:3000)
 
-## Deploy on Vercel
+## Node Types
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **INITIAL** - Starting point for workflows
+- **MANUAL_TRIGGER** - Manually triggered workflow execution
+- **HTTP_REQUEST** - Make HTTP API calls with configurable method, endpoint, and body
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## License
+
+Private project.
