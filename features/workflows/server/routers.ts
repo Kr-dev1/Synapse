@@ -1,5 +1,6 @@
 import { NodeType } from "@/app/generated/prisma";
 import { PAGINATION } from "@/config/constants";
+import { inngest } from "@/inngest/client";
 import prisma from "@/lib/db";
 import {
   createTRPCRouter,
@@ -11,6 +12,25 @@ import { generateSlug } from "random-word-slugs";
 import z from "zod";
 
 export const workflowsRouter = createTRPCRouter({
+  execute: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const workflow = await prisma.workFlow.findUniqueOrThrow({
+        where: {
+          id: input.id,
+          userId: ctx.session.user.id,
+        },
+      });
+
+      await inngest.send({
+        name: "workflow/execute.workflow",
+        data: {
+          workflowId: input.id,
+        },
+      });
+
+      return workflow;
+    }),
   create: premiumProcedure.mutation(({ ctx }) => {
     return prisma.workFlow.create({
       data: {
