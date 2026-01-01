@@ -18,6 +18,7 @@ import {
   Controls,
   MiniMap,
   Panel,
+  ControlButton,
 } from "@xyflow/react";
 import { nodeComponents } from "@/config/node-components";
 import { NodeType } from "@/app/generated/prisma";
@@ -28,6 +29,8 @@ import { AddNodeButton } from "./add-node-button";
 //xy-flowstyles
 import "@xyflow/react/dist/style.css";
 import { ExecuteWorkFlowButton } from "./execute-workflow-button";
+import { MagnetIcon, VectorSquareIcon, WorkflowIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export const EditorLoading = () => {
   return <LoadingView message="Loading editor" />;
@@ -38,6 +41,8 @@ export const EditorError = () => {
 };
 
 export const Editor = ({ workflowId }: { workflowId: string }) => {
+  const [snaptoGrid, setSnaptoGrid] = useState(true);
+  const [background, setBackground] = useState(true);
   const { data: workflow } = useSuspenseWorkflow(workflowId);
 
   const setEditor = useSetAtom(editorAtom);
@@ -82,13 +87,47 @@ export const Editor = ({ workflowId }: { workflowId: string }) => {
           fitView
           proOptions={{ hideAttribution: true }}
           onInit={setEditor}
+          snapToGrid={snaptoGrid}
           snapGrid={[10, 10]}
-          snapToGrid
           panOnScroll
         >
-          <Background />
-          <Controls />
-          <MiniMap />
+          {background && <Background />}
+          <Controls showInteractive orientation="horizontal">
+            <ControlButton onClick={() => setSnaptoGrid((prev) => !prev)}>
+              <span className="relative">
+                <MagnetIcon className="rotate-135" />
+                {!snaptoGrid && (
+                  <svg className="absolute inset-0" viewBox="0 0 24 24">
+                    <line
+                      x1="0"
+                      y1="24"
+                      x2="24"
+                      y2="0"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                  </svg>
+                )}
+              </span>
+            </ControlButton>
+            <ControlButton onClick={() => setBackground((prev) => !prev)}>
+              <span className="relative">
+                <VectorSquareIcon />
+                {!background && (
+                  <svg className="absolute inset-0" viewBox="0 0 24 24">
+                    <line
+                      x1="0"
+                      y1="24"
+                      x2="24"
+                      y2="0"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                  </svg>
+                )}
+              </span>
+            </ControlButton>
+          </Controls>
           <Panel position="top-right">
             <AddNodeButton />
           </Panel>
